@@ -1,6 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
-from model.consultas import crear_tabla, borrar_tabla, Pygrades, guardar, listar
+from tkinter import ttk, messagebox
+from model.consultas import crear_tabla, borrar_tabla, Pygrades, guardar, listar, editar, eliminar
+
+
 
 #----- BARRA MENÚ ( HEAD ) --------
 def barra_menu(ventana):
@@ -33,10 +35,12 @@ class Frame(tk.Frame):
             )
         self.ventana = ventana
         self.pack()
+        self.ID_Estudiante = None
         self.config( background= "#292929" )
         self.App_Pygrades()
         self.deshabilitar_campos()
         self.view()
+
 
     def App_Pygrades (self):
 
@@ -125,7 +129,7 @@ class Frame(tk.Frame):
         )
 
         #BOTON DE EDITAR
-        self.boton_editar = tk.Button(self, text="Editar")
+        self.boton_editar = tk.Button(self, text="Editar", command=self.editar_datos)
         self.boton_editar.config(
             width=20,
             font= ("Arial",12,"bold"),
@@ -144,7 +148,7 @@ class Frame(tk.Frame):
         )
 
         #BOTON DE ELIMINAR
-        self.boton_eliminar = tk.Button(self, text="Eliminar")
+        self.boton_eliminar = tk.Button(self, text="Eliminar", command= self.eliminar_datos)
         self.boton_eliminar.config(
             width=20,
             font= ("Arial",12,"bold"),
@@ -201,6 +205,7 @@ class Frame(tk.Frame):
             pady=10,
         )
 
+    #--- FUNCION PARA HABILITAR LA ENTRADA DE TEXTO
     def habilitar_campos(self):
         self.el_estudiante.set("")
         self.la_asignatura.set("")
@@ -213,6 +218,7 @@ class Frame(tk.Frame):
         self.boton_guardar.config(state="normal")
         self.boton_eliminar.config(state="normal")
 
+    #--- FUNCION PARA DESABILITAR LA ENTRADA DE TEXTO ---
     def deshabilitar_campos(self):
         self.el_estudiante.set("")
         self.la_asignatura.set("")
@@ -225,6 +231,7 @@ class Frame(tk.Frame):
         self.boton_guardar.config(state="disabled")
         self.boton_eliminar.config(state="disabled")
     
+    #--- FUNCION PARA GUARDAR DATOS EN EL REGISTRO ---
     def guardar_datos(self):
 
         pygrades = Pygrades(
@@ -233,23 +240,30 @@ class Frame(tk.Frame):
             self.la_nota.get(),
         )
 
-        guardar(pygrades)
-        self.view()
+        if self.ID_Estudiante == None:
+            guardar(pygrades)
+        else:
+            editar(pygrades, self.ID_Estudiante)
 
+        
+        self.view()
+        
         self.deshabilitar_campos()
 
+    #--- FUNCION VISTA ---
     def view (self):
+
         self.lista_pygrade = listar()
         self.lista_pygrade.reverse()
-        self.tabla = ttk.Treeview(self, columns= ("Estudiante", "Asignatura", "Calificacion"))
-
+        self.tabla = ttk.Treeview(self, columns= ("Estudiante", "Asignatura", "Calificacion"))        
+        
         self.tabla.grid(
             row=4,
             column=0, columnspan=4,
             sticky="nse"
         )
 
-       #BARRA DE DESPLAZAMIENTO DE LA LISTA
+        #---BARRA DE DESPLAZAMIENTO DE VISTA---
         self.scroll = ttk.Scrollbar(self, orient= "vertical", command=self.tabla.yview)
 
         self.scroll.grid(
@@ -266,3 +280,40 @@ class Frame(tk.Frame):
 
             self.tabla.insert('',0, text=p[0], 
             values=(p[1], p[2], p[3]))
+    
+    #---FUNCION PARA EDITAR LOS DATOS DEL REGISTRO---
+    def editar_datos(self):
+        try:
+            self.ID_Estudiante = self.tabla.item(self.tabla.selection())["text"]
+            self.Estudiante =self.tabla.item(
+                self.tabla.selection())['values'][0]
+            self.Asignatura =self.tabla.item(
+                self.tabla.selection())['values'][1]
+            self.Calificacion =self.tabla.item(
+                self.tabla.selection())['values'][2]
+        
+            self.habilitar_campos()
+
+            self.entry_estudiante.insert(0, self.Estudiante)
+            self.entry_asignatura.insert(0, self.Asignatura)
+            self.entry_nota.insert(0, self.Calificacion)
+
+        except:
+            titulo = "Edición de datos"
+            menseje = "No ha seleccionado ningun registro"
+            messagebox.showerror(titulo,menseje)
+
+    def eliminar_datos(self):
+
+        try:
+            self.ID_Estudiante = self.tabla.item(self.tabla.selection())["text"]
+            eliminar(self.ID_Estudiante)
+
+            self.view
+        except:
+            titulo = "Eliminar un Registro"
+            menseje = "No se ha seleccionado ningun registro"
+            messagebox.showerror(titulo,menseje)
+
+
+
