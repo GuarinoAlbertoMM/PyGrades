@@ -1,7 +1,7 @@
 import tkinter as tk
-from client.Administrador_GUI import Contenedor_Admn
-from client.Profesor_GUI import Contenedor_Pfsr
-from client.Estudiante_GUI import Contenedor_Esdt
+from client.Administrador_GUI import Contenedor_Admn, Bar_Menu_Admn
+from client.Profesor_GUI import Contenedor_Pfsr, Bar_Menu_Pfsr
+from client.Estudiante_GUI import Contenedor_Etdt, Bar_Menu_Etdt
 
 
 # -------------------- VENTANAS --------------------- #
@@ -12,6 +12,8 @@ def Admn():
     win_admn.title ("Pygrades_Administrador")
     win_admn.iconbitmap("IMG/Logo_icono.ico")
     win_admn.resizable(0,0)
+    Bar_Menu_Admn(win_admn)
+
 
     app_admn = Contenedor_Admn(win_admn = win_admn)
 
@@ -24,6 +26,7 @@ def Pfsr():
     win_pfsr.title ("Pygrades_Profesor")
     win_pfsr.iconbitmap("IMG/Logo_icono.ico")
     win_pfsr.resizable(0,0)
+    Bar_Menu_Pfsr(win_pfsr)
 
     app_pfsr = Contenedor_Pfsr(win_pfsr = win_pfsr)
 
@@ -31,14 +34,14 @@ def Pfsr():
 
 #---- ESTUDIANTE ------
 def Etdt():
-    win_esdt = tk.Tk()
-    win_esdt.title ("Pygrades_Estudiante")
-    win_esdt.iconbitmap("IMG/Logo_icono.ico")
-    win_esdt.resizable(0,0)
+    win_etdt = tk.Tk()
+    win_etdt.title ("Pygrades_Estudiante")
+    win_etdt.iconbitmap("IMG/Logo_icono.ico")
+    win_etdt.resizable(0,0)
+    Bar_Menu_Etdt(win_etdt)
+    app_etdt = Contenedor_Etdt(win_etdt = win_etdt)
 
-    app_esdt = Contenedor_Esdt(win_esdt = win_esdt)
-
-    app_esdt.mainloop()
+    app_etdt.mainloop()
     
 
 if __name__ == '__main__':

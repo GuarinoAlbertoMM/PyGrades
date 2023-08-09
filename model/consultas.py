@@ -45,31 +45,35 @@ def crear_tabla():
     conexion = ConexionDB()
 
     sql1 = '''
-    CREATE TABLE pygrades(
-        ID_Estudiante INTEGER,
-        Estudiante VARCHAR(50),
-        Asignatura VARCHAR(50),
-        Calificacion INTEGER,
-        PRIMARY KEY(ID_Estudiante AUTOINCREMENT)
+    CREATE TABLE administrador(
+        ID_admin INTEGER,
+        Nombre_admn VARCHAR(30),
+        Apellido_admn VARCHAR(30),
+        Usuario_admn VARCHAR(30),
+        Contraseña_admn VARCHAR(30),
+        (ID_Profesor AUTOINCREMENT),
+        PRIMARY KEY (Usuario)
         )'''
     
 
     sql2 = '''
-    CREATE TABLE profesores(
+    CREATE TABLE profesor(
+        ID_Profesor INTEGER AUTOINCREMENT,
         Nombre VARCHAR(30),
         Apellido VARCHAR(30),
         Asignatura VARCHAR(30),
-        Usuario VARCHAR(20),
+        Usuario_pfsr VARCHAR(20),
         Contraseña VARCHAR(10),
         PRIMARY KEY(Usuario)
     )'''
     
     sql3 = '''
-    CREATE TABLE estudiantes(
+    CREATE TABLE estudiante(
+        ID_Estudiante INTEGER AUTOINCREMENT,
         Nombre VARCHAR(50),
         Apellido VARCHAR(50),
         Edad INTEGER,
-        Usuario VARCHAR(20),
+        Usuario_etdt VARCHAR(20),
         Contraseña VARCHAR(10),
         PRIMARY KEY(Usuario)
 
@@ -93,9 +97,9 @@ def crear_tabla():
 def borrar_tabla():
     conexion = ConexionDB()
 
-    sql1 = 'DROP TABLE pygrades'
-    sql2 = 'DROP TABLE profesores'
-    sql3 = 'DROP TABLE estudiantes'
+    sql1 = 'DROP TABLE aministrador'
+    sql2 = 'DROP TABLE profesor'
+    sql3 = 'DROP TABLE estudiante'
     sql4 = 'DROP TABLE sqlite_sequence'
 
     try:
@@ -112,16 +116,16 @@ def borrar_tabla():
         messagebox.showerror(titulo,mensaje)
     
 #---- GUARDAR REGISTRO --------    
-def guardar(pygrades, profesores, estudiantes):
+def guardar(administrador, profesores, estudiantes):
     conexion = ConexionDB()
 
-    sql1 = f"""INSERT INTO pygrades (Estudiante, Asignatura, Calificacion)
-            VALUES('{pygrades.Estudiante}', '{pygrades.Asignatura}', '{pygrades.Calificacion}')"""
+    sql1 = f"""INSERT INTO administrador (Nombre_admn, Apellido_admn, Usuario_admn, Contraseña_admn)
+            VALUES('{administrador.Nombre_admn}', '{administrador.Apellido_admn}', '{administrador.Usuario_admn}', '{administrador.Contraseña_admn}')"""
 
-    sql2 = f"""INSERT INTO profesores (Nombre, Apellido, Asignatura, Usuario, Contraseña)
+    sql2 = f"""INSERT INTO profesores (Nombre, Apellido, Asignatura, Usuario_pfsr, Contraseña)
             VALUES('{profesores.Nombre}', '{profesores.Apellido}', '{profesores.Asignatura}', '{profesores.Usuario}', '{profesores.Contraseña}')"""
 
-    sql3 = f"""INSERT INTO estudiantes (Nombre, Apellido, Edad, Usuario, Contraseña)
+    sql3 = f"""INSERT INTO estudiantes (Nombre, Apellido, Edad, Usuario_etdt, Contraseña)
             VALUES('{estudiantes.Nombre}', '{estudiantes.Apellido}', '{estudiantes.Edad}', '{estudiantes.Usuario}', '{estudiantes.Contraseña}')"""
 
     try:
@@ -139,45 +143,45 @@ def guardar(pygrades, profesores, estudiantes):
 def listar():
     conexion = ConexionDB()
     
-    lista_pygrades = []
-    sql1 = 'SELECT * FROM pygrades'
+    lista_administrador = []
+    sql1 = 'SELECT * FROM administrador'
 
-    lista_profesores = []
-    sql2 = 'SELECT * FROM profesores'
+    lista_profesor = []
+    sql2 = 'SELECT * FROM profesor'
 
-    lista_estudiantes = []
-    sql3 = 'SELECT * FROM estudiantes'
+    lista_estudiante = []
+    sql3 = 'SELECT * FROM estudiante'
 
     try:
         conexion.cursor.execute(sql1)
         conexion.cursor.execute(sql2)
         conexion.cursor.execute(sql3)        
 
-        lista_pygrades = conexion.cursor.fetchall()
-        lista_profesores = conexion.cursor.fetchall()
-        lista_estudiantes = conexion.cursor.fetchall()
+        lista_administrador = conexion.cursor.fetchall()
+        lista_profesor = conexion.cursor.fetchall()
+        lista_estudiante = conexion.cursor.fetchall()
         conexion.cerrar()
     except:
         titulo = 'Conexion al Registro' 
         mensaje = 'Crea la tabla en la base de dato'
         messagebox.showerror(titulo, mensaje)
 
-    return lista_pygrades, lista_profesores, lista_estudiantes
+    return lista_administrador, lista_profesor, lista_estudiante
 
 #---- EDITAR REGISTRO ---------
-def editar (Pygrades, ID_Estudiante, Profesores, Prf_Usuario, Estudiantes, Est_Usuario):
+def editar (administrador, ID_admin, Profesor, Prf_Usuario, Estudiantes, Est_Usuario):
     conexion = ConexionDB()
 
-    sql1 = f""" UPDATE Pygrades
-    SET Estudiante = '{Pygrades.Estudiante}', Asignatura = '{Pygrades.Asignatura}', Calificacion = '{Pygrades.Calificacion}'
+    sql1 = f""" UPDATE administrador
+    SET Estudiante = '{administrador.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
     WHERE ID_Estudiante = {ID_Estudiante}""" 
     
     sql2 = f""" UPDATE Profesores
-    SET Estudiante = '{Pygrade.Estudiante}', Asignatura = '{Pygrades.Asignatura}', Calificacion = '{Pygrades.Calificacion}'
+    SET Estudiante = '{Profesor.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
     WHERE ID_Estudiante = {ID_Estudiante}""" 
 
     sql3 = f""" UPDATE Estudiantes
-    SET Estudiante = '{Pygrades.Estudiante}', Asignatura = '{Pygrades.Asignatura}', Calificacion = '{Pygrades.Calificacion}'
+    SET Estudiante = '{administrador.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
     WHERE ID_Estudiante = {ID_Estudiante}""" 
 
     try:
