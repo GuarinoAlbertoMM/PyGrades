@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-
+from model.consultas import crear_tabla, borrar_tabla, Estudiante, guardar_ETDT 
 #--------------------- CONTENEDOR DE OBJETOS ESTUDIANTE ---------------------#
 class Contenedor_Etdt(tk.Frame):
     def __init__(self, win_etdt = None):
@@ -22,14 +22,19 @@ class Contenedor_Etdt(tk.Frame):
         self.label_Apellido_etdt = tk.Label(self, text = "Apellido:")
         self.label_Apellido_etdt.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
         self.label_Apellido_etdt.grid(row=1, column=0, padx=10, pady=10)
+        
+        self.label_Edad_etdt = tk.Label(self, text = "Edad:")
+        self.label_Edad_etdt.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
+        self.label_Edad_etdt.grid(row=2, column=0, padx=10, pady=10)
+
 
         self.label_Usuario_etdt = tk.Label(self, text = "Usuario:")
         self.label_Usuario_etdt.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
-        self.label_Usuario_etdt.grid(row=2, column=0, padx=10, pady=10)
+        self.label_Usuario_etdt.grid(row=3, column=0, padx=10, pady=10)
 
         self.label_Contraseña_etdt = tk.Label(self, text = "Contraseña:")
         self.label_Contraseña_etdt.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
-        self.label_Contraseña_etdt.grid(row=3, column=0, padx=10, pady=10)
+        self.label_Contraseña_etdt.grid(row=4, column=0, padx=10, pady=10)
 
 
         # TEXTBOX (IMPUT) NOMBRE
@@ -63,6 +68,21 @@ class Contenedor_Etdt(tk.Frame):
             pady=10,
             columnspan=2
             )
+        # TEXTBOX (IMPUT) EDAD
+        self.edad_etdt = tk.StringVar()
+        self.entry_edad_etdt = tk.Entry(self, textvariable= self.edad_etdt)
+        self.entry_edad_etdt.config(
+            width=50,
+            font= ("Arial",12)
+            )
+        
+        self.entry_edad_etdt.grid(
+            row=2,
+            column=1,
+            padx=10,
+            pady=10,
+            columnspan=2
+            )
         
         # TEXTBOX (IMPUT) USUARIO
         self.usuario_etdt = tk.StringVar()
@@ -73,7 +93,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.entry_usuario_etdt.grid(
-            row=2,
+            row=3,
             column=1, 
             padx=10,
             pady=10,
@@ -89,7 +109,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.entry_contraseña_etdt.grid(
-            row=3,
+            row=4,
             column=1, 
             padx=10,
             pady=10,
@@ -111,7 +131,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.boton_crear.grid(
-            row=4,
+            row=5,
             column=2,
             padx=10,
             pady=10,
@@ -130,7 +150,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.boton_editar.grid(
-            row=4,
+            row=5,
             column=1,
             padx=10,
             pady=10,
@@ -149,7 +169,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.boton_eliminar.grid(
-            row=4,
+            row=5,
             column=0,
             padx=10,
             pady=10,
@@ -157,7 +177,7 @@ class Contenedor_Etdt(tk.Frame):
 
 
         #BOTON DE GUARDAR
-        self.boton_guardar = tk.Button(self, text="Guardar", command= self.deshabilitar_campos)
+        self.boton_guardar = tk.Button(self, text="Guardar", command= self.guardar_datos)
         self.boton_guardar.config(
             width=20,
             font= ("Arial",12,"bold"),
@@ -169,7 +189,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.boton_guardar.grid(
-            row=6,
+            row=7,
             column=2,
             padx=10,
             pady=10,
@@ -188,7 +208,7 @@ class Contenedor_Etdt(tk.Frame):
             )
         
         self.boton_salir.grid(
-            row=6,
+            row=7,
             column=0,
             padx=10,
             pady=10,
@@ -199,8 +219,15 @@ class Contenedor_Etdt(tk.Frame):
 
     #--- FUNCION PARA HABILITAR LA ENTRADA DE TEXTO 
     def habilitar_campos(self):
+        self.nombre_etdt.set("")
+        self.apellido_etdt.set("")
+        self.edad_etdt.set("")
+        self.usuario_etdt.set("")
+        self.contraseña_etdt.set("")
+    
         self.entry_nombre_etdt.config(state="normal")
         self.entry_apellido_etdt.config(state="normal")
+        self.entry_edad_etdt.config(state="normal")
         self.entry_usuario_etdt.config(state="normal")
         self.entry_contraseña_etdt.config(state="normal")
 
@@ -209,8 +236,15 @@ class Contenedor_Etdt(tk.Frame):
 
     #--- FUNCION PARA DESABILITAR LA ENTRADA DE TEXTO ---
     def deshabilitar_campos(self):
+        self.nombre_etdt.set("")
+        self.apellido_etdt.set("")
+        self.edad_etdt.set("")
+        self.usuario_etdt.set("")
+        self.contraseña_etdt.set("")
+    
         self.entry_nombre_etdt.config(state="disabled")
         self.entry_apellido_etdt.config(state="disabled")
+        self.entry_edad_etdt.config(state="normal")
         self.entry_usuario_etdt.config(state="disabled")
         self.entry_contraseña_etdt.config(state="disabled")
 
@@ -222,6 +256,20 @@ class Contenedor_Etdt(tk.Frame):
             
         self.win_etdt.destroy
 
+   #--- FUNCION PARA BOTON GUARDAR ---
+    def guardar_datos(self):
+
+        estudiante = Estudiante(
+            self.nombre_etdt.get(),
+            self.apellido_etdt.get(),
+            self.edad_etdt.get(),
+            self.usuario_etdt.get(),
+            self.contraseña_etdt.get(),
+        )
+        
+        guardar_ETDT(estudiante)
+        
+        self.deshabilitar_campos()
 
     #--- FUNCION VISTA ---
     def view (self):
@@ -229,7 +277,7 @@ class Contenedor_Etdt(tk.Frame):
         self.tabla = ttk.Treeview(self, columns= ("Nombre", "Apellido", "Usuario", "Contraseña"))    
         
         self.tabla.grid(
-            row=5,
+            row=6,
             column=0, columnspan=4,
             sticky="nse"
         )
@@ -259,8 +307,8 @@ def Bar_Menu_Etdt(win_esdt):
     menu_inicio = tk.Menu(barra_menu, tearoff=0)
     barra_menu.add_cascade(label="Inicio", menu= menu_inicio)
 
-    menu_inicio.add_command(label="Crear base de datos")
-    menu_inicio.add_command(label="Eliminar base de datos")
+    menu_inicio.add_command(label="Crear base de datos", command= crear_tabla)
+    menu_inicio.add_command(label="Eliminar base de datos", command= borrar_tabla)
     menu_inicio.add_command(label="Salir", command= win_esdt.destroy)
 
     menu_consultar = tk.Menu(barra_menu, tearoff=0)

@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from model.consultas import crear_tabla, borrar_tabla, Profesor, guardar_PFSR
 
 #--------------------- CONTENEDOR DE OBJETOS PROFESOR ---------------------#
 class Contenedor_Pfsr(tk.Frame):
@@ -23,7 +24,7 @@ class Contenedor_Pfsr(tk.Frame):
         self.label_Apellido_pfsr.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
         self.label_Apellido_pfsr.grid(row=1, column=0, padx=10, pady=10)
 
-        self.label_Asignatura_pfsr = tk.Label(self, text = "Apellido:")
+        self.label_Asignatura_pfsr = tk.Label(self, text = "Asignatura:")
         self.label_Asignatura_pfsr.config(fg="#FFFFFF", background="#009193", font= ("Arial",12," bold"))
         self.label_Asignatura_pfsr.grid(row=2, column=0, padx=10, pady=10)
 
@@ -69,14 +70,14 @@ class Contenedor_Pfsr(tk.Frame):
             )
 
         # TEXTBOX (IMPUT) ASIGNATURA
-        self.Asignatura_pfsr = tk.StringVar()
-        self.entry_Asignatura_pfsr = tk.Entry(self, textvariable= self.Asignatura_pfsr)
-        self.entry_Asignatura_pfsr.config(
+        self.asignatura_pfsr = tk.StringVar()
+        self.entry_asignatura_pfsr = tk.Entry(self, textvariable= self.asignatura_pfsr)
+        self.entry_asignatura_pfsr.config(
             width=50,
             font= ("Arial",12)  
             )
         
-        self.entry_Asignatura_pfsr.grid(
+        self.entry_asignatura_pfsr.grid(
             row=2,
             column=1, 
             padx=10,
@@ -177,7 +178,7 @@ class Contenedor_Pfsr(tk.Frame):
 
 
         #BOTON DE GUARDAR
-        self.boton_guardar = tk.Button(self, text="Guardar", command= self.deshabilitar_campos)
+        self.boton_guardar = tk.Button(self, text="Guardar", command= self.guardar_datos)
         self.boton_guardar.config(
             width=20,
             font= ("Arial",12,"bold"),
@@ -219,8 +220,15 @@ class Contenedor_Pfsr(tk.Frame):
 
     #--- FUNCION PARA HABILITAR LA ENTRADA DE TEXTO 
     def habilitar_campos(self):
+        self.nombre_pfsr.set("")
+        self.apellido_pfsr.set("")
+        self.asignatura_pfsr.set("")
+        self.usuario_pfsr.set("")
+        self.contraseña_pfsr.set("")
+
         self.entry_nombre_pfsr.config(state="normal")
         self.entry_apellido_pfsr.config(state="normal")
+        self.entry_asignatura_pfsr.config(state="disabled")
         self.entry_usuario_pfsr.config(state="normal")
         self.entry_contraseña_pfsr.config(state="normal")
 
@@ -229,8 +237,15 @@ class Contenedor_Pfsr(tk.Frame):
 
     #--- FUNCION PARA DESABILITAR LA ENTRADA DE TEXTO ---
     def deshabilitar_campos(self):
+        self.nombre_pfsr.set("")
+        self.apellido_pfsr.set("")
+        self.asignatura_pfsr.set("")
+        self.usuario_pfsr.set("")
+        self.contraseña_pfsr.set("")
+
         self.entry_nombre_pfsr.config(state="disabled")
         self.entry_apellido_pfsr.config(state="disabled")
+        self.entry_asignatura_pfsr.config(state="disabled")
         self.entry_usuario_pfsr.config(state="disabled")
         self.entry_contraseña_pfsr.config(state="disabled")
 
@@ -241,6 +256,21 @@ class Contenedor_Pfsr(tk.Frame):
     def btn_salir(self):
             
         self.win_pfsr.destroy
+
+   #--- FUNCION PARA BOTON GUARDAR ---
+    def guardar_datos(self):
+
+        profesor = Profesor(
+            self.nombre_pfsr.get(),
+            self.apellido_pfsr.get(),
+            self.asignatura_pfsr.get(),
+            self.usuario_pfsr.get(),
+            self.contraseña_pfsr.get(),
+        )
+        
+        guardar_PFSR(profesor)
+        
+        self.deshabilitar_campos()
 
     #--- FUNCION VISTA ---
     def view (self):
@@ -276,8 +306,8 @@ def Bar_Menu_Pfsr(win_pfsr):
     menu_inicio = tk.Menu(barra_menu, tearoff=0)
     barra_menu.add_cascade(label="Inicio", menu= menu_inicio)
 
-    menu_inicio.add_command(label="Crear base de datos")
-    menu_inicio.add_command(label="Eliminar base de datos")
+    menu_inicio.add_command(label="Crear base de datos", command= crear_tabla)
+    menu_inicio.add_command(label="Eliminar base de datos", command= borrar_tabla)
     menu_inicio.add_command(label="Salir", command= win_pfsr.destroy)
 
     menu_consultar = tk.Menu(barra_menu, tearoff=0)

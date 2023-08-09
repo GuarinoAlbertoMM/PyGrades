@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+from model.consultas import crear_tabla, borrar_tabla, Administrador, guardar_ADMN
 
 #--------------------- CONTENEDOR DE OBJETOS ADMINISTRADOR ---------------------#
 class Contenedor_Admn(tk.Frame):
@@ -157,7 +158,7 @@ class Contenedor_Admn(tk.Frame):
 
 
         #BOTON DE GUARDAR
-        self.boton_guardar = tk.Button(self, text="Guardar", command= self.deshabilitar_campos)
+        self.boton_guardar = tk.Button(self, text="Guardar", command= self.guardar_datos)
         self.boton_guardar.config(
             width=20,
             font= ("Arial",12,"bold"),
@@ -235,8 +236,14 @@ class Contenedor_Admn(tk.Frame):
     #--- FUNCION PARA BOTON GUARDAR ---
     def guardar_datos(self):
 
+        administrador = Administrador(
+            self.nombre_admn.get(),
+            self.apellido_admn.get(),
+            self.usuario_admn.get(),
+            self.contraseña_admn.get(),
+        )
         
-        self.view()
+        guardar_ADMN(administrador)
         
         self.deshabilitar_campos()
 
@@ -278,8 +285,8 @@ def Bar_Menu_Admn(win_admn):
     menu_inicio = tk.Menu(barra_menu, tearoff=0)
     barra_menu.add_cascade(label="Inicio", menu= menu_inicio)
 
-    menu_inicio.add_command(label="Crear base de datos")
-    menu_inicio.add_command(label="Eliminar base de datos")
+    menu_inicio.add_command(label="Crear base de datos", command=crear_tabla)
+    menu_inicio.add_command(label="Eliminar base de datos", command=borrar_tabla)
     menu_inicio.add_command(label="Salir", command= win_admn.destroy)
 
     menu_consultar = tk.Menu(barra_menu, tearoff=0)
