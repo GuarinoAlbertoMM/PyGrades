@@ -31,7 +31,7 @@ def login():
         if(dataIsT == 1):
             messagebox.showinfo(title="Login Success", message="Has iniciado sesión correctamente como maestro.") 
             Pfsr()
-        else:
+        if(dataIsT == 0):
             messagebox.showinfo(title="Login Success", message="Has iniciado sesión correctamente como estudiante.") 
             Etdt()
     else:
