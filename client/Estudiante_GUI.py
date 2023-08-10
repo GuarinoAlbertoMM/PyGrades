@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import ttk
 from model.consultas import listar_estd
 
 #--------------------- CONTENEDOR DE OBJETOS ESTUDIANTE ---------------------#

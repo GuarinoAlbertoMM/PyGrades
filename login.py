@@ -8,9 +8,6 @@ window.title("Inicio de sesión")
 window.geometry('440x480')
 window.configure(bg='#333333')
 
-class NombreDelUsuario:
-    nombre = ''
-
 def login():
 
     username = username_entry.get()
@@ -22,12 +19,12 @@ def login():
     dataUser = userData[0][0]
     dataPass = userData[1][0]
     dataIsT = userData[2][0]
-    NombreDelUsuario.nombre = userData[3][0]
+    NombreDelUsuario = userData[3][0]
 
     print("Usuario", dataUser)
     print("Contra", dataPass)
     print("ist", dataIsT)
-    print("Nombre ", NombreDelUsuario.nombre)
+    print("Nombre ", NombreDelUsuario)
 
     if dataUser==username and dataPass==password:
         if(dataIsT == 1):
