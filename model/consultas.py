@@ -30,16 +30,17 @@ class Profesor:
 
 #---- TABLA ESTUDIANTE -----
 class Estudiante:
-    def __init__(self,Nombre_etdt,Apellido_etdt,Edad_etdt,Usuario_etdt,Contraseña_etdt):
+    def __init__(self,Nombre_etdt,Apellido_etdt,Asignatura_etdt,Calificacion_etdt,Usuario_etdt,Contraseña_etdt):
         self.ID_Estudiante = None
         self.Nombre_etdt = Nombre_etdt
         self.Apellido_etdt = Apellido_etdt
-        self.Edad_etdt = Edad_etdt 
+        self.Asignatura_etdt = Asignatura_etdt 
+        self.Calificacion_etdt = Calificacion_etdt
         self.Usuario_etdt = Usuario_etdt
         self.Contraseña_etdt = Contraseña_etdt
 
     def __str__(self):
-        return f"estudiante[{self.Nombre}, {self.Apellido}, {self.Edad}, {self.Est_Usuario}, {self.Contraseña}]"
+        return f"estudiante[{self.Nombre_etdt}, {self.Apellido_etdt}, {self.Asignatura_etdt}, {self.Calificacion_etdt}, {self.Usuario_etdt}, {self.Contraseña_etdt}]"
     
 #---------------------------------------- FUNCIONES -------------------------------------------
 
@@ -74,7 +75,8 @@ def crear_tabla():
         ID_Estudiante INTEGER,
         Nombre_etdt VARCHAR(50),
         Apellido_etdt VARCHAR(50),
-        Edad_etdt INTEGER,
+        Asignatura_etdt VARCHAR(30),
+        Calificacion_etdt INTEGER,
         Usuario_etdt VARCHAR(20),
         Contraseña_etdt VARCHAR(10),
         PRIMARY KEY(ID_Estudiante AUTOINCREMENT)
@@ -150,8 +152,8 @@ def guardar_PFSR(profesor):
 def guardar_ETDT(estudiante):
     conexion = ConexionDB()
 
-    sql3 = f"""INSERT INTO estudiante (Nombre_etdt, Apellido_etdt, Edad_etdt, Usuario_etdt, Contraseña_etdt)
-            VALUES('{estudiante.Nombre_etdt}', '{estudiante.Apellido_etdt}', '{estudiante.Edad_etdt}', '{estudiante.Usuario_etdt}', '{estudiante.Contraseña_etdt}')"""
+    sql3 = f"""INSERT INTO estudiante (Nombre_etdt, Apellido_etdt, Asignatura_etdt, Calificacion_etdt, Usuario_etdt, Contraseña_etdt)
+            VALUES('{estudiante.Nombre_etdt}', '{estudiante.Apellido_etdt}', '{estudiante.Asignatura_etdt}', '{estudiante.Calificacion_etdt}', '{estudiante.Usuario_etdt}', '{estudiante.Contraseña_etdt}')"""
 
     try:
         conexion.cursor.execute(sql3)
@@ -161,72 +163,120 @@ def guardar_ETDT(estudiante):
         titulo = 'Conexion al Registro'
         mensaje = 'La tabla pygrades no esta creada en la base de datos'
         messagebox.showerror(titulo, mensaje)
-#-- SELECCIONAR PARA EDITAR ---
-#def listar():
-    #conexion = ConexionDB()
+
+#-- CARGAR BASE DE DATO EN EL VIEW ---
+def listar_ADMN():
+    conexion = ConexionDB()
     
-    #lista_administrador = []
-    #sql1 = 'SELECT * FROM administrador'
+    lista_administrador = []
+    sql1 = 'SELECT * FROM administrador'
 
-    #lista_profesor = []
-    #sql2 = 'SELECT * FROM profesor'
+    try:
+        conexion.cursor.execute(sql1)  
+        lista_administrador = conexion.cursor.fetchall()
 
-    #lista_estudiante = []
-    #sql3 = 'SELECT * FROM estudiante'
+        conexion.cerrar()
+    except:
+        titulo = 'Conexion al Registro' 
+        mensaje = 'Crea la tabla en la base de dato'
+        messagebox.showerror(titulo, mensaje)
 
-    #try:
-     #   conexion.cursor.execute(sql1)
-      #  conexion.cursor.execute(sql2)
-       # conexion.cursor.execute(sql3)        
+    return lista_administrador
 
-  #      lista_administrador = conexion.cursor.fetchall()
-   #     lista_profesor = conexion.cursor.fetchall()
-    #    lista_estudiante = conexion.cursor.fetchall()
-     #   conexion.cerrar()
-    #except:
-     #   titulo = 'Conexion al Registro' 
-      #  mensaje = 'Crea la tabla en la base de dato'
-       # messagebox.showerror(titulo, mensaje)
+def listar_PFSR():
+    conexion = ConexionDB()
 
-#    return lista_administrador, lista_profesor, lista_estudiante
+    lista_profesor = []
+    sql2 = 'SELECT * FROM profesor'
+
+    try:
+        conexion.cursor.execute(sql2)
+        lista_profesor = conexion.cursor.fetchall()
+        conexion.cerrar()
+    except:
+        titulo = 'Conexion al Registro' 
+        mensaje = 'Crea la tabla en la base de dato'
+        messagebox.showerror(titulo, mensaje)
+
+    return lista_profesor
+
+def listar_ETDT():
+    conexion = ConexionDB()
+
+    lista_estudiante = []
+    sql3 = 'SELECT * FROM estudiante'
+
+    try:
+        conexion.cursor.execute(sql3)        
+        lista_estudiante = conexion.cursor.fetchall()
+        conexion.cerrar()
+    except:
+        titulo = 'Conexion al Registro' 
+        mensaje = 'Crea la tabla en la base de dato'
+        messagebox.showerror(titulo, mensaje)
+
+    return lista_estudiante
 
 #---- EDITAR REGISTRO ---------
-#def editar (administrador, ID_admin, Profesor, Prf_Usuario, Estudiantes, Est_Usuario):
- #   conexion = ConexionDB()
+def editar_PFSR (profesor, ID_Profesor):
+    conexion = ConexionDB()
+ 
+    sql1 = f""" UPDATE profesor
+    SET Nombre_pfsr = '{profesor.Nombre_pfsr}', Apellido_pfsr = '{profesor.Apellido_pfsr}', Asignatura_pfsr = '{profesor.Asignatura_pfsr}', Usuario_pfsr = '{profesor.Usuario_pfsr}', Contraseña_pfsr = '{profesor.Contraseña_pfsr}'
+    WHERE ID_Profesor = {ID_Profesor}""" 
 
-  #  sql1 = f""" UPDATE administrador
-   # SET administrador = '{administrador.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
-    #WHERE ID_Estudiante = {ID_admin}""" 
+    try:
+        conexion.cursor.execute(sql1)
+        conexion.cerrar()
+    except:
+        titulo = "Edición de datos"
+        menseje = "No se pudo editar este registro"
+        messagebox.showerror(titulo,menseje)
+
+def editar_ETDT (estudiante, ID_Estudiante):
+    conexion = ConexionDB()
+
+    sql2 = f""" UPDATE estudiante
+    SET Nombre_etdt = '{estudiante.Nombre_etdt}', Apellido_etdt = '{estudiante.Apellido_etdt}', Asignatura_etdt = '{estudiante.Asignatura_etdt}', Calificacion_etdt = '{estudiante.Calificacion_etdt}', Usuario_etdt = '{estudiante.Usuario_etdt}', Contraseña_etdt = '{estudiante.Contraseña_etdt}'
+    WHERE ID_Estudiante = {ID_Estudiante}""" 
     
-#    sql2 = f""" UPDATE Profesores
- #   SET Estudiante = '{Profesor.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
-  #  WHERE ID_Estudiante = {ID_Profesor}""" 
+    try:
+        conexion.cursor.execute(sql2)
+        conexion.cerrar()
+    except:
+        titulo = "Edición de datos"
+        menseje = "No se pudo editar este registro"
+        messagebox.showerror(titulo,menseje)
 
-   # sql3 = f""" UPDATE Estudiantes
-#    SET Estudiante = '{administrador.Estudiante}', Asignatura = '{administrador.Asignatura}', Calificacion = '{administrador.Calificacion}'
- #   WHERE ID_Estudiante = {ID_Estudiante}""" 
-
-  #  try:
-   #     conexion.cursor.execute(sql)
-    #    conexion.cerrar()
- #   except:
-  #      titulo = "Edición de datos"
-   #     menseje = "No se pudo editar este registro"
-    #    messagebox.showerror(titulo,menseje)
-
-#def eliminar(ID_Estudiante):
-#    conexion = ConexionDB()
+def eliminar_PFSR(ID_Profesor):
+    conexion = ConexionDB()
     
- #   sql = f'DELETE FROM pygrades WHERE ID_Estudiante = {ID_Estudiante}'
+    sql1 = f'DELETE FROM profesor WHERE ID_Profesor = {ID_Profesor}'
     
-  #  try:
-   #     conexion.cursor.execute(sql)
-    #    conexion.cerrar()
-    #except:
-     #   titulo = "Eliminar Datos"
-      #  menseje = "No se pudo eliminar este registro"
-       # messagebox.showerror(titulo,menseje)
+    try:
+        conexion.cursor.execute(sql1)
+        conexion.cerrar()
+    except:
+        titulo = "Eliminar Datos"
+        menseje = "No se pudo eliminar este registro"
+        messagebox.showerror(titulo,menseje)
 
         
+def eliminar_ETDT(ID_Estudiante):
+    conexion = ConexionDB()
+    
+    sql2 = f'DELETE FROM estudiante WHERE ID_Estudiante = {ID_Estudiante}'
+    
+    try:
+        conexion.cursor.execute(sql2)
+        conexion.cerrar()
+    except:
+        titulo = "Eliminar Datos"
+        menseje = "No se pudo eliminar este registro"
+        messagebox.showerror(titulo,menseje)
+
+        
+
+
 
 
