@@ -7,8 +7,7 @@ password:str = 'GuarinoMendoza1'
 def get_user_data(username:str,password:str):
     userName = []
     userPassword = []
-    isTeacher = []
-    user_name = []
+    rol = []
 
     # Connect to the database
     conn = sqlite3.connect('database/pygradesDB.db')
@@ -17,7 +16,7 @@ def get_user_data(username:str,password:str):
     cursor = conn.cursor()
 
     # Execute the SELECT statement to enter the grade table
-    cursor.execute("SELECT * FROM students")
+    cursor.execute("SELECT * FROM administrador")
     #cursor.execute("SELECT * FROM teachers")
 
     # Fetch all the rows
@@ -28,31 +27,40 @@ def get_user_data(username:str,password:str):
         if(username == row[3] and password == row[4]):
             userName.append(row[3])
             userPassword.append(row[4])
-            isTeacher.append(row[1])
-            user_name.append(row[2])
+            rol.append(row[5])
             
-    cursor.execute("SELECT * FROM teachers")
+    cursor.execute("SELECT * FROM profesor")
 
     # Fetch all the rows
     rows = cursor.fetchall()
 
     # Print the grades
     for row in rows:
-        if(username == row[3] and password == row[4]):
-            userName.append(row[3])
-            userPassword.append(row[4])
-            isTeacher.append(row[1])
-            user_name.append(row[2])
+        if(username == row[4] and password == row[5]):
+            userName.append(row[4])
+            userPassword.append(row[5])
+            rol.append(row[6])
+            
+    cursor.execute("SELECT * FROM estudiante")
+
+    # Fetch all the rows
+    rows = cursor.fetchall()
+
+    # Print the grades
+    for row in rows:
+        if(username == row[5] and password == row[6]):
+            userName.append(row[5])
+            userPassword.append(row[6])
+            rol.append(row[7])
             
 
     conn.close()
 
     print("Usuario:", userName)
     print("Contra:", userPassword)
-    print("Es profe?:", isTeacher)
-    print("Nombre:", user_name )      
+    print("Rol:", rol)     
 
     #Return all the data that is necessary
-    return userName, userPassword, isTeacher, user_name
+    return userName, userPassword, rol
 
 get_user_data(username,password)

@@ -1,2 +1,3 @@
-# PyGrades
-Calification manegament tool
+# pygrades
+
+Grade management tool
