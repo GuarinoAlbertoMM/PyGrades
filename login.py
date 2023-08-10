@@ -1,12 +1,15 @@
 import tkinter
 from tkinter import messagebox
 from get_user import get_user_data
-from App_Pygrades import main
+from App_Pygrades import Pfsr,Etdt
 
 window = tkinter.Tk()
 window.title("Inicio de sesión")
-window.geometry('440x580')
+window.geometry('440x480')
 window.configure(bg='#333333')
+
+class NombreDelUsuario:
+    nombre = ''
 
 def login():
 
@@ -18,18 +21,21 @@ def login():
 
     dataUser = userData[0][0]
     dataPass = userData[1][0]
-    dataId = userData[2][0]
-    dataIste = userData[3][0]
+    dataIsT = userData[2][0]
+    NombreDelUsuario.nombre = userData[3][0]
 
-    isteacher:int = 0
-
-    if(dataId <6):
-            isteacher = 1
+    print("Usuario", dataUser)
+    print("Contra", dataPass)
+    print("ist", dataIsT)
+    print("Nombre ", NombreDelUsuario.nombre)
 
     if dataUser==username and dataPass==password:
-        messagebox.showinfo(title="Login Success", message="Haz iniciado sesión correctamente.")
-        if(isteacher == 1):
-             main()   
+        if(dataIsT == 1):
+            messagebox.showinfo(title="Login Success", message="Haz iniciado sesión correctamente como maestro.")
+            Pfsr()
+        else:
+            messagebox.showinfo(title="Login Success", message="Haz iniciado sesión correctamente como estudiante.") 
+            Etdt()
     else:
         messagebox.showerror(title="Error", message="Fallo en inicio de sesión.")
 

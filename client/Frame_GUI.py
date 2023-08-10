@@ -265,4 +265,4 @@ class Frame(tk.Frame):
         for p in self.lista_pygrade:
 
             self.tabla.insert('',0, text=p[0], 
-            values=(p[1], p[2], p[3]))
+            values=(p[1], p[3], p[4]))
